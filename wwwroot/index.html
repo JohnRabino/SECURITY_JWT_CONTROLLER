@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Products - JWT Client</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --void: #050505;
+            --panel: #0f0f0f;
+            --panel-raised: #1a1a1a;
+            --line: #2a2a2a;
+            --white: #f2f2f2;
+            --muted: #7a7a7a;
+            --win: #3ddc84;
+            --win-bg: rgba(61, 220, 132, 0.1);
+            --lock: #e4303b;
+            --lock-bg: rgba(228, 48, 59, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", system-ui, sans-serif;
+            background: var(--void);
+            color: var(--white);
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 2.5rem 1.25rem 4rem;
+            line-height: 1.5;
+        }
+
+        h1 {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 2.5rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            line-height: 0.95;
+            margin: 0 0 0.3rem;
+            color: var(--white);
+        }
+
+        .subhead {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin: 0 0 1.5rem;
+            border-left: 3px solid var(--lock);
+            padding-left: 0.6rem;
+        }
+
+        h2 {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 1.3rem;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            margin: 0 0 0.75rem;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            h2::before {
+                content: "";
+                width: 10px;
+                height: 10px;
+                background: var(--white);
+                clip-path: polygon(30% 0, 100% 0, 70% 100%, 0 100%);
+                flex-shrink: 0;
+            }
+
+        section.accent-admin h2::before {
+            background: var(--lock);
+        }
+
+        section.accent-key h2::before {
+            background: var(--win);
+        }
+
+        #status {
+            background: var(--panel);
+            border: 2px solid var(--line);
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+            padding: 0.75rem 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.75rem;
+        }
+
+            #status .label {
+                font-family: "Bebas Neue", sans-serif;
+                font-size: 0.7rem;
+                letter-spacing: 0.08em;
+                color: var(--muted);
+                margin-right: 0.5rem;
+            }
+
+        #whoami {
+            font-weight: 600;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+            #whoami.active {
+                color: var(--white);
+            }
+
+            #whoami .role-admin {
+                color: var(--lock);
+                font-weight: 700;
+            }
+
+            #whoami .role-user {
+                color: var(--win);
+                font-weight: 700;
+            }
+
+        #logoutBtn {
+            background: transparent;
+            border: 2px solid var(--line);
+            color: var(--muted);
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            padding: 0.35rem 0.8rem;
+            cursor: pointer;
+            transition: border-color 0.15s, color 0.15s;
+        }
+
+            #logoutBtn:hover {
+                border-color: var(--lock);
+                color: var(--lock);
+            }
+
+        section {
+            background: var(--panel);
+            border: 2px solid var(--line);
+            padding: 1.2rem 1.3rem 1.3rem;
+            margin: 0 0 1rem;
+            position: relative;
+        }
+
+            section::after {
+                content: "";
+                position: absolute;
+                top: -2px;
+                left: -2px;
+                width: 22px;
+                height: 22px;
+                border-top: 2px solid var(--white);
+                border-left: 2px solid var(--white);
+            }
+
+            section.accent-admin::after {
+                border-color: var(--lock);
+            }
+
+            section.accent-key::after {
+                border-color: var(--win);
+            }
+
+        label.inline-hint {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin: -0.3rem 0 0.9rem;
+        }
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        input {
+            background: var(--panel-raised);
+            border: 2px solid var(--line);
+            color: var(--white);
+            padding: 0.55rem 0.7rem;
+            font-family: "Inter", sans-serif;
+            font-size: 0.9rem;
+            flex: 1 1 140px;
+            min-width: 0;
+        }
+
+            input::placeholder {
+                color: var(--muted);
+            }
+
+            input:focus {
+                outline: none;
+                border-color: var(--white);
+            }
+
+        button {
+            background: var(--white);
+            border: 2px solid var(--white);
+            color: var(--void);
+            padding: 0.55rem 1.1rem;
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+        }
+
+            button:hover {
+                background: var(--void);
+                color: var(--white);
+            }
+
+        section.accent-admin button {
+            background: var(--lock);
+            border-color: var(--lock);
+            color: var(--white);
+        }
+
+            section.accent-admin button:hover {
+                background: var(--void);
+                color: var(--lock);
+            }
+
+        .msg {
+            min-height: 1.3em;
+            font-family: "Inter", monospace;
+            font-size: 0.78rem;
+            font-weight: 600;
+            margin: 0.7rem 0 0;
+        }
+
+            .msg:empty {
+                margin: 0;
+            }
+
+        .ok {
+            color: var(--win);
+            background: var(--win-bg);
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-left: 2px solid var(--win);
+        }
+
+        .err {
+            color: var(--lock);
+            background: var(--lock-bg);
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-left: 2px solid var(--lock);
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 0.88rem;
+        }
+
+        th {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            font-weight: 400;
+            color: var(--muted);
+            text-align: left;
+            padding: 0.4rem 0.4rem;
+            border-bottom: 2px solid var(--line);
+        }
+
+        td {
+            border-bottom: 1px solid var(--line);
+            padding: 0.6rem 0.4rem;
+            color: var(--white);
+        }
+
+            td:nth-child(3) {
+                font-weight: 600;
+                text-align: right;
+            }
+
+        tbody tr:hover td {
+            background: var(--panel-raised);
+        }
+
+        td button {
+            padding: 0.3rem 0.65rem;
+            font-size: 0.78rem;
+            background: transparent;
+            border-color: var(--lock);
+            color: var(--lock);
+        }
+
+            td button:hover {
+                background: var(--lock);
+                color: var(--white);
+            }
+    </style>
+</head>
+<body>
+    <h1>Access Console</h1>
+    <p class="subhead">products api — jwt authentication &amp; role-based authorization</p>
+
+    <div id="status">
+        <span><span class="label">SESSION</span><span id="whoami">no active session</span></span>
+        <button id="logoutBtn" onclick="logout()" style="display:none">End Session</button>
+    </div>
+
+    <section class="accent-key">
+        <h2>Register</h2>
+        <form id="registerForm">
+            <input id="regUser" placeholder="Username" required />
+            <input id="regPass" type="password" placeholder="Password" required />
+            <button type="submit">Register</button>
+        </form>
+        <p id="regMsg" class="msg"></p>
+    </section>
+
+    <section class="accent-key">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <input id="logUser" placeholder="Username" required />
+            <input id="logPass" type="password" placeholder="Password" required />
+            <button type="submit">Login</button>
+        </form>
+        <p id="loginMsg" class="msg"></p>
+    </section>
+
+    <section class="accent-admin">
+        <h2>Add Product</h2>
+        <label class="inline-hint">requires a token with the Admin role</label>
+        <form id="addForm">
+            <input id="pName" placeholder="Name" required />
+            <input id="pPrice" type="number" step="0.01" placeholder="Price" required />
+            <button type="submit">Add</button>
+        </form>
+        <p id="addMsg" class="msg"></p>
+    </section>
+
+    <section>
+        <h2>Product List</h2>
+        <label class="inline-hint">open to anyone — no token required</label>
+        <table>
+            <thead><tr><th>ID</th><th>Name</th><th>Price</th><th>Action</th></tr></thead>
+            <tbody id="productRows"></tbody>
+        </table>
+    </section>
+
+    <script>
+        const BASE = "http://localhost:7936";
+
+        function decodeToken(token) {
+            try {
+                const b64 = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+                return JSON.parse(atob(b64));
+            } catch { return null; }
+        }
+
+        function showUser() {
+            const token = localStorage.getItem("token");
+            const claims = token ? decodeToken(token) : null;
+            const who = document.getElementById("whoami");
+            const btn = document.getElementById("logoutBtn");
+            if (claims) {
+                const name = claims.unique_name || claims.name ||
+                    claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
+                const role = claims.role ||
+                    claims["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+                const roleClass = role === "Admin" ? "role-admin" : "role-user";
+                who.innerHTML = name + " <span class=\"" + roleClass + "\">" + role + "</span>";
+                who.classList.add("active");
+                btn.style.display = "inline-block";
+            } else {
+                who.textContent = "no active session";
+                who.classList.remove("active");
+                btn.style.display = "none";
+            }
+        }
+
+        function setMsg(id, text, ok) {
+            const el = document.getElementById(id);
+            el.textContent = text;
+            el.className = "msg " + (ok ? "ok" : "err");
+        }
+
+        async function authFetch(url, options = {}) {
+            const token = localStorage.getItem("token");
+            options.headers = options.headers || {};
+            if (token) options.headers["Authorization"] = "Bearer " + token;
+
+            const res = await fetch(url, options);
+            if (res.status === 401) alert("Please log in again.");
+            if (res.status === 403) alert("You are not allowed to do that.");
+            return res;
+        }
+
+        document.getElementById("registerForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const res = await fetch(BASE + "/api/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username: document.getElementById("regUser").value,
+                    password: document.getElementById("regPass").value
+                })
+            });
+            if (res.ok) setMsg("regMsg", "201 — registered, now log in", true);
+            else setMsg("regMsg", res.status + " — register failed", false);
+        });
+
+        document.getElementById("loginForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const res = await fetch(BASE + "/api/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username: document.getElementById("logUser").value,
+                    password: document.getElementById("logPass").value
+                })
+            });
+            if (!res.ok) { setMsg("loginMsg", res.status + " — login failed", false); return; }
+            const data = await res.json();
+            localStorage.setItem("token", data.token);
+            setMsg("loginMsg", "200 — logged in", true);
+            showUser();
+            loadAll();
+        });
+
+        function logout() {
+            localStorage.removeItem("token");
+            setMsg("loginMsg", "session cleared", true);
+            showUser();
+            loadAll();
+        }
+
+        async function loadAll() {
+            const res = await fetch(BASE + "/api/products");
+            const items = await res.json();
+            const body = document.getElementById("productRows");
+            body.innerHTML = "";
+            for (const p of items) {
+                const tr = document.createElement("tr");
+                const cells = [p.id, p.name, Number(p.price).toFixed(2)];
+                for (const c of cells) {
+                    const td = document.createElement("td");
+                    td.textContent = c;
+                    tr.appendChild(td);
+                }
+                const act = document.createElement("td");
+                const del = document.createElement("button");
+                del.textContent = "Delete";
+                del.onclick = () => deleteProduct(p.id);
+                act.appendChild(del);
+                tr.appendChild(act);
+                body.appendChild(tr);
+            }
+        }
+
+        async function addProduct(name, price) {
+            const res = await authFetch(BASE + "/api/products", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: name, price: Number(price) })
+            });
+            setMsg("addMsg", res.status + " — POST /api/products", res.ok);
+            if (res.ok) loadAll();
+        }
+
+        async function deleteProduct(id) {
+            const res = await authFetch(BASE + "/api/products/" + id, { method: "DELETE" });
+            setMsg("addMsg", res.status + " — DELETE /api/products/" + id, res.ok);
+            if (res.ok) loadAll();
+        }
+
+        document.getElementById("addForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+            addProduct(document.getElementById("pName").value, document.getElementById("pPrice").value);
+            e.target.reset();
+        });
+
+        showUser();
+        loadAll();
+    </script>
+</body>
+</html>
